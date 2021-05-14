@@ -1,36 +1,42 @@
 const express = require('express');
-const db = require('mysql2');
 const app = express();
-const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const BodyParser = require('body-parser');
+const rotaCadastro = require('./routes/CadastroUsuarios')
+const rotaCadastroQuest = require('./routes/CadastroQuest');
 
-app.use(bodyParser.json())
-app.listen(8080, function(){
-    console.log("Servidor iniciado na porta 8080: http://localhost:8080");
-});
+app.use(morgan('dev'));
+app.use(BodyParser.urlencoded({urlencoded: false})); //apenas dados simples
+app.use(BodyParser.json());
 
-const conn = db.createConnection({
-    host: "127.0.0.1",
-    port: 3306,
-    user:"root",
-    password: "Dev123456",
-    database: "tcc_my_questions",
-    insecureAuth : true
-});
-
-app.get('/', function(req, res){
-    res.send('API ONLINE')
-});
-
+app.use((req, res, next) =>{
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Header', 'Origin,  X-Requested-With, Content-Type, Accept, Authorization');
     
-app.post('/createUser', function(req, res){
-    conn.connect(function(err) {
-        var insert = `insert into USERS(USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL,CPF, DT_NASCIMENTO, ENDERECO, NUMERO, COMPLEMENTO)values('?', '?', '?', '?', '?', '?','?', '?', '?', '?')`;
-        conn.query(insert, [username, password, first_name, last_name, email, cpf, dt_nascimento, endereco, numero, complemento], function(err ,data) {
-            if (err) throw err;
-        conn.query(insert, dados,function (err, result, fields) {
-          if (err) throw err;
-          console.log(result);
-        });
-        });
-      });
-    })
+    if(req.method === 'OPTIONS'){
+        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+        return res.status(200).send({});
+    }
+    next();
+});
+
+app.use('/Cadastro', rotaCadastro);
+app.use('/CreateQuest', rotaCadastroQuest);
+
+
+app.use((req, res, next) => {
+    const erro = new Error("Não encontrado")
+    erro.status = 404;
+    next(erro);
+});
+
+app.use((error,req, res, next) =>{
+    res.status(error.status || 500);
+    return res.send({
+        err: {
+            mensagem: error.mensagem
+        }
+    });
+});
+
+module.exports = app;
