@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const BodyParser = require('body-parser');
-const rotaCadastro = require('./routes/CadastroUsuarios')
+const rotaCadastro = require('./routes/Usuarios')
 const rotaCadastroQuest = require('./routes/CadastroQuest');
 
 app.use(morgan('dev'));
@@ -20,7 +20,7 @@ app.use((req, res, next) =>{
     next();
 });
 
-app.use('/Cadastro', rotaCadastro);
+app.use('/Usuarios', rotaCadastro);
 app.use('/CreateQuest', rotaCadastroQuest);
 
 
