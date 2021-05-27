@@ -4,7 +4,7 @@ const pool = mysql.createPool({
     password: "Dev123456",
     host: "127.0.0.1",
     port: 3306,
-    database: "tcc_my_questions"
+    database: "MyQuestions"
 });
 
 exports.pool = pool;

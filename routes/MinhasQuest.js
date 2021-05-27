@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const mysql = require('../config/db').pool;
+const mysql = require('../config/db');
 
 router.get('/', (req, res, next) => {
+    
     res.status(200).send({
-        mensagem: "Method GET"
+        mensagem: "Suas questões cadastradas"
         
     });
 });
 
-router.post('/', (req, res, next) => {
+router.put('/:id', (req, res, next) => {
 
     const quest = {
         ano: req.body.ano,
@@ -21,11 +22,10 @@ router.post('/', (req, res, next) => {
     };
     mysql.getConnection((error, conn)=> {
         conn.query(
-        'INSERT INTO Questions(AUTOR, SERIE, TRIMESTRE, DISCIPLINA, CONTEUDO, DESCRICAO)VALUES(?,?,?,?,?,?)',
-        [quest.autor, quest.ano, quest.trimestre, quest.materia, quest.conteudo, quest.descricao],
+        'UPDATE QUEST SET ANO_ESCOLAR = ?, TRIMESTRE = ?, MATERIA = ?, AUTOR = ?, CONTEUDO = ?, DESCRICAO = ?',
+        [quest.ano, quest.trimestre, quest.materia, quest.autor, quest.conteudo, quest.descricao],
         (error, resultado, field) => {
             conn.release();
-
             if(error){
                 return res.status(500).send({
                     error: error,
@@ -34,7 +34,7 @@ router.post('/', (req, res, next) => {
             };
 
             res.status(201).send({
-                mensagem: "Questão cadastrada com sucesso!",
+                mensagem: "Questão atualizada com sucesso!",
                 id_questao: resultado.insertId,
                 QuestaoCadastrada: quest
             });
