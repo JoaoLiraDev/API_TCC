@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('../config/db').pool;
+const jwt = require('jsonwebtoken');
+const login = require('../middleware/login');
+
 
 router.get('/', (req, res, next) => {
     res.status(200).send({
@@ -9,8 +12,9 @@ router.get('/', (req, res, next) => {
     });
 });
 
-router.post('/', (req, res, next) => {
 
+router.post('/', login.obrigatorio, (req, res, next) => {
+    console.log(req.usuario);
     const quest = {
         ano: req.body.ano,
         trimestre: req.body.trimestre,
