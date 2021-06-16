@@ -1,11 +1,15 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const cors = require('cors');
 const BodyParser = require('body-parser');
 const rotaCadastro = require('./routes/Usuarios')
 const rotaCadastroQuest = require('./routes/CadastroQuest');
+const rotaMaterias = require('./routes/materias');
+
 
 app.use(morgan('dev'));
+app.use(cors());
 app.use(BodyParser.urlencoded({urlencoded: false})); //apenas dados simples
 app.use(BodyParser.json());
 
@@ -22,6 +26,7 @@ app.use((req, res, next) =>{
 
 app.use('/Usuarios', rotaCadastro);
 app.use('/CreateQuest', rotaCadastroQuest);
+app.use('/Materias', rotaMaterias);
 
 
 app.use((req, res, next) => {
