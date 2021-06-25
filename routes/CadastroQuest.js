@@ -9,7 +9,7 @@ router.get('/all', login.opcional, controllerQuest.getAllQuests);
 
 router.get('/user', login.obrigatorio, controllerQuest.getUserQuests);
 
-router.post('/cadastroQuest', login.opcional, controllerQuest.postCadastroQuest);
+router.post('/cadastroQuest', login.obrigatorio, controllerQuest.postCadastroQuest);
 
 router.patch('/atualiza/:id_quest', login.obrigatorio, controllerQuest.updateQuest);
 
