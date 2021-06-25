@@ -2,6 +2,7 @@ const mysql = require('../config/db').pool;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const EmailConfig = require('../private/EmailConfig');
 
 exports.postCadastro = (req, res, next) => {
 
@@ -101,8 +102,8 @@ exports.postCadastro = (req, res, next) => {
                     port: 587,
                     secure: true,
                     auth: {
-                        user: 'auth.Myquestions@gmail.com',
-                        pass: 'MyQuestions2019'
+                        user: EmailConfig.EmailConfig.user,
+                        pass: EmailConfig.EmailConfig.pass
                     }
                 });
                 mail.sendMail(emailSend, function (error) {
