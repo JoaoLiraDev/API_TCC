@@ -120,6 +120,30 @@ exports.postCadastro = (req, res, next) => {
 
 };
 
+exports.getUser = (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        conn.query(
+            'SELECT * FROM Users WHERE ID_USERS = ?',
+            req.usuario.id_user,
+            (error, result, field) => {
+                conn.release();
+
+                if (error) {
+                    return res.status(500).send({
+                        error: error,
+                        response: null
+                    });
+                };
+
+                res.status(200).send({
+                    mensagem: "Dados do usuário",
+                    user: result[0]
+                });
+            }
+        );
+    });
+}
+
 exports.postLogin = (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
@@ -143,7 +167,15 @@ exports.postLogin = (req, res, next) => {
                     });
                     return res.status(200).send({
                         mensagem: 'Autenticado com sucesso',
-                        token: token
+                        token: token,
+                        user: {
+                            id_user: results[0].ID_USERS,
+                            username: results[0].USERNAME,
+                            first_name: results[0].FIRST_NAME,
+                            last_name: results[0].LAST_NAME,
+                            email: results[0].EMAIL,
+                        }
+
 
                     });
                 }

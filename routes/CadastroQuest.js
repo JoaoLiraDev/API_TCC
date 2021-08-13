@@ -13,4 +13,6 @@ router.post('/cadastroQuest', login.obrigatorio, controllerQuest.postCadastroQue
 
 router.patch('/atualiza/:id_quest', login.obrigatorio, controllerQuest.updateQuest);
 
+router.delete('/delete_quest/:id_quest', login.obrigatorio, controllerQuest.deleteQuest)
+
 module.exports = router;

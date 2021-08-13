@@ -28,7 +28,7 @@ exports.getAllQuests = (req, res, next) => {
 exports.getUserQuests = (req, res, next) => {
     mysql.getConnection((error, conn) => {
         conn.query(
-            'Select * from Questions where ID_USER = ?',
+            'Select * from Questions where ID_USER = ? order by id_quest desc',
             req.usuario.id_user,
             (error, resultado, field) => {
                 conn.release();
@@ -61,8 +61,8 @@ exports.postCadastroQuest = (req, res, next) => {
     };
     mysql.getConnection((error, conn) => {
         conn.query(
-            'INSERT INTO Questions(AUTOR, SERIE, TRIMESTRE, DISCIPLINA, CONTEUDO, DESCRICAO)VALUES(?,?,?,?,?,?)',
-            [quest.autor, quest.ano, quest.trimestre, quest.materia, quest.conteudo, quest.descricao],
+            'INSERT INTO Questions(ID_USER ,AUTOR, SERIE, TRIMESTRE, DISCIPLINA, CONTEUDO, DESCRICAO)VALUES(?,?,?,?,?,?,?)',
+            [req.usuario.id_user, quest.autor, quest.ano, quest.trimestre, quest.materia, quest.conteudo, quest.descricao],
             (error, resultado, field) => {
                 conn.release();
 
@@ -114,4 +114,25 @@ exports.updateQuest = (req, res, next) => {
         );
     });
 
+}
+
+exports.deleteQuest = (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        conn.query(`delete from questions where ID_QUEST = ?`,
+            [req.params.id_quest],
+            (error, result, field) => {
+                conn.release();
+                if (error) {
+                    return res.status(500).send({
+                        error: error,
+                        response: null
+                    });
+                };
+
+                res.status(200).send({
+                    mensagem: "Questão deletada com sucesso!"
+                });
+            }
+        );
+    });
 }
