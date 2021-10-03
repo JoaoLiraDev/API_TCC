@@ -10,7 +10,7 @@ exports.postCadastro = (req, res, next) => {
         USERNAME: req.body.nome,
         PASSWORD: req.body.senha,
         EMAIL: req.body.email,
-        FIRST_NAME: req.body.fist_name,
+        FIRST_NAME: req.body.first_name,
         LAST_NAME: req.body.last_name,
         ESPECIALIDADE: req.body.especialidade,
         DT_NASC: req.body.dt_nasc
