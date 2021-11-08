@@ -49,8 +49,90 @@ exports.getUserQuests = (req, res, next) => {
     });
 };
 
+
+exports.getUserQuestsById = (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        conn.query(
+            'Select * from Questions where id_quest = ? ',
+            req.params.id_quest,
+            (error, resultado, field) => {
+                conn.release();
+
+                if (error) {
+                    return res.status(500).send({
+                        error: error,
+                        response: null
+                    });
+                };
+
+                res.status(200).send({
+                    mensagem: "Questões by ID!",
+                    Query_result: resultado
+                });
+            }
+        );
+    });
+};
+
+exports.postCadastroLembrete = (req, res, next) => {
+    
+    const lembrete = {
+        TITULO_LEMBRTE: req.body.TITULO_LEMBRTE,
+        DT_LEMBRETE: req.body.DT_LEMBRETE
+    };
+    mysql.getConnection((error, conn) => {
+        conn.query(
+            'INSERT INTO Lembretes_User(ID_USER ,TITULO_LEMBRTE, DT_LEMBRETE)VALUES(?,?,?)',
+            [req.usuario.id_user, lembrete.TITULO_LEMBRTE, lembrete.DT_LEMBRETE],
+            (error, resultado, field) => {
+                conn.release();
+
+                if (error) {
+                    return res.status(500).send({
+                        error: error,
+                        response: null
+                    });
+                };
+
+                res.status(201).send({
+                    mensagem: "Lembrete cadastrado com sucesso!",
+                    id_lembrete: resultado.insertId,
+                    LembreteCadastrado: lembrete
+                });
+            }
+        );
+    });
+
+};
+
+exports.getLembrete = (req, res, next) => {
+    
+    mysql.getConnection((error, conn) => {
+        conn.query(
+            'SELECT ID_LEMBRETE ,TITULO_LEMBRTE, DATE_FORMAT( DT_LEMBRETE, "%d/%m/%Y" ) AS dataLembrete, ID_USER  FROM Lembretes_User WHERE ID_USER = ? order by dataLembrete desc',
+            [req.usuario.id_user],
+            (error, resultado, field) => {
+                conn.release();
+
+                if (error) {
+                    return res.status(500).send({
+                        error: error,
+                        response: null
+                    });
+                };
+
+                res.status(201).send({
+                    mensagem: "Lembrete do usuário!",
+                    Lembrete: resultado
+                });
+            }
+        );
+    });
+
+};
+
 exports.postCadastroQuest = (req, res, next) => {
-    console.log(req.usuario);
+    
     const quest = {
         ano: req.body.ano,
         trimestre: req.body.trimestre,
@@ -82,7 +164,7 @@ exports.postCadastroQuest = (req, res, next) => {
         );
     });
 
-}
+};
 
 exports.updateQuest = (req, res, next) => {
     const quest = {
