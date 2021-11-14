@@ -218,3 +218,28 @@ exports.deleteQuest = (req, res, next) => {
         );
     });
 }
+
+
+
+exports.getQuestsSelected = (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        conn.query(
+            `Select * from Questions where id_quest in (${req.params.select});`,
+            (error, resultado, field) => {
+                conn.release();
+
+                if (error) {
+                    return res.status(500).send({
+                        error: error,
+                        response: null
+                    });
+                };
+
+                res.status(200).send({
+                    mensagem: "Questões selecionadas!",
+                    Query_result: resultado
+                });
+            }
+        );
+    });
+};

@@ -21,5 +21,6 @@ router.patch('/atualiza/:id_quest', login.obrigatorio, controllerQuest.updateQue
 
 router.delete('/delete_quest/:id_quest', login.obrigatorio, controllerQuest.deleteQuest)
 
+router.get('/questSelected/:select', login.obrigatorio, controllerQuest.getQuestsSelected);
 
 module.exports = router;
